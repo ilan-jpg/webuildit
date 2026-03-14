@@ -11,18 +11,19 @@
     
     <style>
         :root {
-            --bg-dark: #000000;
-            --accent-blue: #2a8af6;
-            --accent-green: #00f2fe;
+            --bg-dark: #09090B;
+            --accent-primary: #EAB308;
+            --accent-blue: #EAB308;
+            --accent-green: #ffffff;
             --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-main: #f8f9fa;
-            --text-muted: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #FAFAFA;
+            --text-muted: #99A0AA;
         }
 
-        html {
-            scroll-behavior: smooth; /* Native smooth scroll */
-        }
+        /* html {
+            scroll-behavior: smooth; <- Removed because Lenis handles this now
+        } */
         
         /* Smooth scrolling lenis equivalent setup (optional if native is enough, but native is smooth) */
         body {
@@ -34,44 +35,52 @@
             overscroll-behavior-y: none;
         }
 
-        /* --- ANIMATIONS (Antigravity Style) --- */
-        .reveal {
+        /* --- ANIMATIONS (Minimal Water Jerk) --- */
+        @keyframes waterWobbleUp {
+            0% { opacity: 0; transform: translateY(40px); filter: blur(10px); }
+            60% { opacity: 1; transform: translateY(-5px); filter: blur(0); }
+            80% { transform: translateY(2px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        @keyframes waterWobbleLeft {
+            0% { opacity: 0; transform: translateX(-40px); filter: blur(10px); }
+            60% { opacity: 1; transform: translateX(5px); filter: blur(0); }
+            80% { transform: translateX(-2px); }
+            100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        @keyframes waterWobbleRight {
+            0% { opacity: 0; transform: translateX(40px); filter: blur(10px); }
+            60% { opacity: 1; transform: translateX(-5px); filter: blur(0); }
+            80% { transform: translateX(2px); }
+            100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+
+        .reveal, .slide-left, .slide-right {
             opacity: 0;
-            transform: translateY(40px);
             filter: blur(10px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
+            transition: all 0.5s ease;
+            will-change: transform, opacity, filter;
+        }
+
+        .reveal {
+            transform: translateY(40px);
         }
         .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
+            animation: waterWobbleUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         .slide-left {
-            opacity: 0;
-            transform: translateX(-60px);
-            filter: blur(10px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
+            transform: translateX(-40px);
         }
         .slide-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-            filter: blur(0);
+            animation: waterWobbleLeft 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         .slide-right {
-            opacity: 0;
-            transform: translateX(60px);
-            filter: blur(10px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
+            transform: translateX(40px);
         }
         .slide-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-            filter: blur(0);
+            animation: waterWobbleRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         /* Quirky minimalistic bounce for marquee logos */
@@ -91,28 +100,65 @@
             padding: 0;
         }
 
-        /* --- LOGO BAR --- */
+        /* --- TASKBAR --- */
         nav {
-            height: 70px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid var(--glass-border);
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            position: sticky;
-            top: 0;
+            justify-content: space-between;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             z-index: 1000;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .nav-contact {
+            background: #ffffff;
+            color: #1A1A1A !important;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .nav-contact:hover {
+            background: var(--accent-primary) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4);
         }
 
         .logo {
             font-weight: 700;
-            font-size: 24px;
+            font-size: 20px;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #FAFAFA;
         }
 
         /* --- MARQUEE --- */
@@ -123,6 +169,7 @@
             border-bottom: 1px solid var(--glass-border);
             padding: 12px 0;
             white-space: nowrap;
+            margin-top: 100px; /* Offset for fixed floating taskbar */
         }
 
         .marquee-content {
@@ -214,27 +261,26 @@
         }
 
         .btn-glow {
-            padding: 20px 48px;
-            font-size: 18px;
+            padding: 16px 40px;
+            font-size: 16px;
             font-weight: 600;
-            color: #ffffff;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, transparent 100%), rgba(20, 20, 20, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
+            color: #1A1A1A;
+            background: #FAFAFA;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             z-index: 2;
             display: inline-block;
-            backdrop-filter: blur(10px);
         }
 
         .btn-glow:hover {
             transform: translateY(-4px);
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(42, 138, 246, 0.4);
-            background: linear-gradient(to bottom, rgba(42, 138, 246, 0.1) 0%, transparent 100%), rgba(30, 30, 30, 0.8);
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            box-shadow: 0 15px 30px rgba(234, 179, 8, 0.4);
         }
 
         /* --- VALUE PROP --- */
@@ -392,11 +438,35 @@
         }
 
     </style>
+    </style>
+    <!-- LENIS SMOOTH SCROLL CSS -->
+    <style>
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body>
+<body id="top">
 
     <nav>
-        <div class="logo">WeBuildIt</div>
+        <a href="#top" class="logo" style="text-decoration: none;">WeBuildIt</a>
+        <div class="nav-links">
+            <a href="#propositions">Value Props</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#contact-target" class="nav-contact">Contact</a>
+        </div>
     </nav>
 
     <div class="marquee">
@@ -422,7 +492,7 @@
         <a href="#contact-target" class="btn-glow" id="scroll-trigger">Start Your Project</a>
     </section>
 
-    <section class="section">
+    <section class="section" id="propositions">
         <h2 class="section-title reveal">Value Proposition</h2>
         <div class="value-grid">
             <div class="value-card slide-left">
@@ -440,7 +510,17 @@
         </div>
     </section>
 
-    <section class="section">
+    <section class="section reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <h2 class="section-title reveal">Trusted Worldwide</h2>
+        <p class="reveal" style="max-width: 600px; color: var(--text-muted); margin-top: -40px; margin-bottom: 20px; line-height: 1.6;">
+            Chosen by forward-thinking leaders and visionary teams across the globe. Our passion for digital excellence connects us with clients everywhere, driving impactful results.
+        </p>
+        <div class="reveal" style="width: 100%; max-width: 500px; aspect-ratio: 1/1; position: relative;">
+            <canvas id="cobe-canvas" style="width: 100%; height: 100%; cursor: grab;"></canvas>
+        </div>
+    </section>
+
+    <section class="section" id="testimonials">
         <h2 class="section-title reveal">Proof & Testimonials</h2>
         <div class="testi-grid">
             <div class="testi-card reveal" style="transition-delay: 0s;">
@@ -544,15 +624,15 @@
         // --- INTERSECTION OBSERVER FOR FLOW-IN ANIMATION ---
         const observerOptions = {
             root: null,
-            rootMargin: '0px',
-            threshold: 0.15
+            rootMargin: '0px 0px -50px 0px',
+            threshold: 0.05
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); // Run once
+                    observer.unobserve(entry.target); // Run only once
                 }
             });
         }, observerOptions);
@@ -561,27 +641,157 @@
             observer.observe(el);
         });
 
-        // --- HERO INITIAL REVEAL ---
-        setTimeout(() => {
-            document.querySelector('.hero h1').classList.add('reveal', 'visible');
-            document.querySelector('.hero p').classList.add('reveal', 'visible');
-            document.querySelector('.btn-glow').classList.add('reveal', 'visible');
-            document.querySelector('.hero h1').style.transitionDelay = '0.2s';
-            document.querySelector('.hero p').style.transitionDelay = '0.4s';
-            document.querySelector('.btn-glow').style.transitionDelay = '0.6s';
-        }, 100);
-
-        // --- BULLETPROOF SMOOTH SCROLL ---
-        document.getElementById('scroll-trigger').addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.getElementById('contact-target');
-            
-            // This ensures a controlled, smooth glide
-            window.scrollTo({
-                top: target.offsetTop,
-                behavior: 'smooth'
+        // --- BULLETPROOF SMOOTH SCROLL (Native Fallback, but using Lenis below) ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                // We'll let Lenis handle the scrolling to anchor if it's active.
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement && window.lenis) {
+                     window.lenis.scrollTo(targetElement, { offset: targetId === 'top' ? 0 : -100 });
+                } else if (targetElement) {
+                    window.scrollTo({
+                        top: targetId === 'top' ? 0 : Math.max(0, targetElement.offsetTop - 100),
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
+    </script>
+    
+    <!-- LENIS SCRIPT FOR BUTTERY SMOOTH GLOBAL SCROLL -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        // Make lenis globally available for anchor links
+        window.lenis = lenis;
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+    </script>
+    <script type="module">
+        import createGlobe from 'https://cdn.skypack.dev/cobe';
+
+        let phi = 0;
+        let theta = 0.3; // Starting Y axis
+        let currentPhi = 0;
+        let currentTheta = 0.3;
+        
+        let cobeCanvas = document.getElementById("cobe-canvas");
+        
+        // Physics variables for interaction
+        let pointerInteracting = null;
+        let pointerDownX = 0;
+        let pointerDownY = 0;
+        let spinVelocityX = 0;
+        let spinVelocityY = 0;
+        
+        if (cobeCanvas) {
+            // Pointer event listeners for full 360 interaction
+            cobeCanvas.addEventListener('pointerdown', (e) => {
+                pointerInteracting = true;
+                pointerDownX = e.clientX;
+                pointerDownY = e.clientY;
+                cobeCanvas.style.cursor = 'grabbing';
+                spinVelocityX = 0;
+                spinVelocityY = 0;
+            });
+            cobeCanvas.addEventListener('pointerup', () => {
+                pointerInteracting = false;
+                cobeCanvas.style.cursor = 'grab';
+            });
+            cobeCanvas.addEventListener('pointerout', () => {
+                pointerInteracting = false;
+                cobeCanvas.style.cursor = 'grab';
+            });
+            cobeCanvas.addEventListener('pointermove', (e) => {
+                if (pointerInteracting) {
+                    const deltaX = e.clientX - pointerDownX;
+                    const deltaY = e.clientY - pointerDownY;
+                    pointerDownX = e.clientX;
+                    pointerDownY = e.clientY;
+                    
+                    // Directly apply to current rotation
+                    currentPhi += deltaX * 0.005;
+                    currentTheta += deltaY * 0.005;
+                    
+                    // Add momentum
+                    spinVelocityX = deltaX * 0.005;
+                    spinVelocityY = deltaY * 0.005;
+                }
+            });
+
+            const globe = createGlobe(cobeCanvas, {
+                devicePixelRatio: 2,
+                width: 1000,
+                height: 1000,
+                phi: 0,
+                theta: 0.3,
+                dark: 1,
+                diffuse: 1.5,
+                scale: 1,
+                mapSamples: 35000, // Increased dots
+                mapBrightness: 12, // More contrast
+                baseColor: [1, 1, 1], // Pure white dots for high contrast
+                markerColor: [0.917, 0.701, 0.031], // #EAB308
+                glowColor: [0.1, 0.1, 0.12], 
+                markers: [
+                    { location: [37.7595, -122.4367], size: 0.06 }, 
+                    { location: [40.7128, -74.0060], size: 0.06 },
+                    { location: [51.5074, -0.1278], size: 0.05 },
+                    { location: [48.8566, 2.3522], size: 0.05 },
+                    { location: [35.6762, 139.6503], size: 0.07 },
+                    { location: [28.6139, 77.2090], size: 0.06 },
+                    { location: [-33.8688, 151.2093], size: 0.06 },
+                    { location: [1.3521, 103.8198], size: 0.06 }, 
+                    { location: [52.5200, 13.4050], size: 0.06 }, 
+                    { location: [-23.5505, -46.6333], size: 0.06 }, 
+                    { location: [25.2048, 55.2708], size: 0.05 }, 
+                ],
+                onRender: (state) => {
+                    // If not interacting, apply momentum and slowly revert
+                    if(!pointerInteracting) {
+                        // Apply friction to momentum
+                        spinVelocityX *= 0.95; 
+                        spinVelocityY *= 0.95;
+                        
+                        currentPhi += spinVelocityX;
+                        currentTheta += spinVelocityY;
+                        
+                        // Slowly pull back to a base rotation if velocity is low
+                        if (Math.abs(spinVelocityX) < 0.001 && Math.abs(spinVelocityY) < 0.001) {
+                             phi += 0.005; // Base auto-spin
+                             // Lerp back to base parameters
+                             currentPhi += (phi - currentPhi) * 0.05;
+                             currentTheta += (0.3 - currentTheta) * 0.05; 
+                        } else {
+                             // Sync the base phi to the spun phi so it doesn't snap back instantly
+                             phi = currentPhi;
+                        }
+                    }
+                    
+                    state.phi = currentPhi;
+                    state.theta = currentTheta;
+                }
+            });
+        }
     </script>
 </body>
 </html>
